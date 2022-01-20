@@ -53,27 +53,10 @@ class PropertyController extends AbstractController
                 'slug' => $property->getSlug()
             ], 301);
         }
+        
         return $this->render('property/show.html.twig', [
             'current_menu' => 'properties',
             'property' => $property
         ]);
     }
 }
-
-        // $property = new Property;
-        // $property->setTitle('Le premier bien')
-        //     ->setPrice(200000)
-        //     ->setRooms(4)
-        //     ->setBedrooms(3)
-        //     ->setDescription('Une description lorem')
-        //     ->setSurface(60)
-        //     ->setFloor(4)
-        //     ->setHeat(1)
-        //     ->setCity('Montpellier')
-        //     ->setAddress('15 bd Gambetta')
-        //     ->setPostalCode(34000)
-        // ;
-
-        // $em = $this->getDoctrine()->getManager();
-        // $em->persist($property);
-        // $em->flush();
