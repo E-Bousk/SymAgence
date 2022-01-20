@@ -7,4 +7,22 @@
         <h1>Agence Lorem Ipsum</h1>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem nulla laboriosam iste minus fuga asperiores non omnis tenetur ea a.</p>
     </div>
+    <div class="container">
+        <h2>Les derniers biens</h2>
+        <div class="row flex">
+            {% for property in properties %}
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="h5 card-title">
+                                <a href="{{ path('property.show', { slug: property.slug, id: property.id }) }}">{{ property.title }}</a>
+                            </h3>
+                            <p class="card-text">{{ property.city }} ({{ property.postalCode }}</p>
+                            <div class="text-primary" style="font-weight: bold; font-size: 2rem;">{{ property.formattedPrice }}&nbsp;&euro;</div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
