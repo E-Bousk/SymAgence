@@ -2,10 +2,11 @@
 
 namespace App\Repository;
 
+use Doctrine\ORM\Query;
 use App\Entity\Property;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Property|null find($id, $lockMode = null, $lockVersion = null)
@@ -30,13 +31,12 @@ class PropertyRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Property[] 
+     * @return Query
      */
-    public function findAllUnsold(): array
+    public function findAllUnsoldQuery(): Query
     {
         return $this->findUnsoldQuery()
             ->getQuery()
-            ->getResult()
         ;
     }
     
