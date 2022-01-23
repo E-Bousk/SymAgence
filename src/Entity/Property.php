@@ -2,15 +2,19 @@
 
 namespace App\Entity;
 
-use App\Repository\PropertyRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
+use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PropertyRepository;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\ArrayCollection;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
+ * @Vich\Uploadable
  * @ORM\Entity(repositoryClass=PropertyRepository::class)
  * @UniqueEntity("title")
  */
@@ -27,6 +31,24 @@ class Property
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     *
+     * @var string|null
+     */
+    private $imageName;
+
+    /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     * 
+     * @Assert\Image(
+     *      mimeTypes="image/jpeg")
+     * @Vich\UploadableField(mapping="property_image", fileNameProperty="imageName")
+     * 
+     * @var File|null
+     */
+    private $imageFile;
 
     /**
      * @Assert\Length(min=5, max=255)
@@ -101,9 +123,14 @@ class Property
      */
     private $options;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updated_at;
+
     public function __construct()
     {
-        $this->created_at = new \DateTime();
+        $this->created_at = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
         $this->options = new ArrayCollection();
     }
 
@@ -306,6 +333,72 @@ class Property
         if ($this->options->removeElement($option)) {
             $option->removeProperty($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of imageName
+     *
+     * @return  string|null
+     */ 
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    /**
+     * Set the value of imageName
+     *
+     * @param  string|null  $imageName
+     *
+     * @return  Property
+     */ 
+    public function setImageName($imageName): Property
+    {
+        $this->imageName = $imageName;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of imageFile
+     *
+     * @return  File|null
+     */ 
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * Set the value of imageFile
+     *
+     * @param  File|null  $imageFile
+     *
+     * @return  Property
+     */ 
+    public function setImageFile($imageFile): Property
+    {
+        $this->imageFile = $imageFile;
+
+        if ($this->imageFile instanceof UploadedFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updated_at = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+        }
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
 
         return $this;
     }
